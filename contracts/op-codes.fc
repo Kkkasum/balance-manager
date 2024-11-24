@@ -1,0 +1,9 @@
+const int op::withdraw = 0xb5de5f9e;
+const int op::withdraw_ton = 0x37726bdb;
+const int op::withdraw_jetton = 0x11c09682;
+const int op::excess = 0x8ac8cfd1;
+const int op::change_owner = 0x93b05b31;
+const int op::change_jetton = 0xbe845442;
+
+;; Jetton
+const int op::transfer = 0xf8a7ea5;
