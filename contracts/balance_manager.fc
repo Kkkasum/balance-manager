@@ -35,6 +35,29 @@ global cell  storage::jetton_wallet_code;
     send_raw_message(msg, mode);
 }
 
+() send_usdt(int amount, slice destination, slice usdt_master_address, cell usdt_wallet_code) impure inline {
+    cell state_init = calculate_jetton_wallet_state_init(my_address(), usdt_master_address, usdt_wallet_code);
+    slice jetton_wallet_address = calculate_jetton_wallet_address(state_init);
+
+    cell msg_body = begin_cell()
+        .store_uint(op::transfer, 32)
+        .store_uint(0, 64)
+        .store_coins(amount)
+        .store_slice(destination)
+        .store_slice(storage::owner_address)
+        .store_uint(0, 1)
+        .store_coins(0)
+        .store_uint(0, 1)
+    .end_cell();
+    cell msg = begin_cell()
+        .store_uint(0x18, 6)
+        .store_slice(jetton_wallet_address)
+        .store_coins(0)
+        .store_statinit_ref_and_body_ref(state_init, msg_body)
+    .end_cell();
+    send_raw_message(msg, SEND_MODE_BOUNCE_ON_ACTION_FAIL | SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE);
+}
+
 () send_jetton(int amount, slice destination, slice jetton_master_address, cell jetton_wallet_code) impure inline {
     cell state_init = calculate_jetton_wallet_state_init(my_address(), jetton_master_address, jetton_wallet_code);
     slice jetton_wallet_address = calculate_jetton_wallet_address(state_init);
@@ -46,7 +69,7 @@ global cell  storage::jetton_wallet_code;
         .store_slice(destination)
         .store_slice(storage::owner_address)
         .store_uint(0, 1)
-        .store_coins(1)
+        .store_coins(0)
         .store_uint(0, 1)
     .end_cell();
     cell msg = begin_cell()
@@ -77,11 +100,11 @@ global cell  storage::jetton_wallet_code;
 
     throw_unless(error::unauthorized_owner_request, equal_slices_bits(sender_address, storage::owner_address));
 
-    if (op == op::withdraw) {
-        int jetton_amount = in_msg_body~load_coins();
+    if (op == op::withdraw_usdt) {
+        int usdt_amount = in_msg_body~load_coins();
         slice destination = in_msg_body~load_msg_addr();
 
-        send_jetton(jetton_amount, destination, storage::jetton_master_address, storage::jetton_wallet_code);
+        send_usdt(usdt_amount, destination, storage::jetton_master_address, storage::jetton_wallet_code);
 
         return ();
     }
@@ -131,6 +154,13 @@ global cell  storage::jetton_wallet_code;
         storage::jetton_wallet_code = jetton_wallet_code;
         send_ok(sender_address, 0, SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE);
         save_data();
+        return ();
+    }
+
+    if (op == op::upgrade) {
+        (cell new_data, cell new_code) = (in_msg_body~load_ref(), in_msg_body~load_ref());
+        set_data(new_data);
+        set_code(new_code);
         return ();
     }
 

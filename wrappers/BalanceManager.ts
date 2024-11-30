@@ -1,7 +1,7 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
 
 export const Op = {
-    withdraw: 0xb5de5f9e,
+    withdrawUsdt: 0xc333f664,
     withdrawTon: 0x37726bdb,
     withdrawJetton: 0x11c09682,
     excess: 0x8ac8cfd1,
@@ -53,7 +53,7 @@ export class BalanceManager implements Contract {
         });
     }
 
-    async sendWithdraw(
+    async sendWithdrawUsdt(
         provider: ContractProvider,
         via: Sender,
         opts: { value: bigint; jettonAmount: bigint; destination: Address },
@@ -62,7 +62,7 @@ export class BalanceManager implements Contract {
             value: opts.value,
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell()
-                .storeUint(Op.withdraw, 32)
+                .storeUint(Op.withdrawUsdt, 32)
                 .storeUint(0, 64)
                 .storeCoins(opts.jettonAmount)
                 .storeAddress(opts.destination)
