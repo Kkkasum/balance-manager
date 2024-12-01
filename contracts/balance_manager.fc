@@ -2,6 +2,7 @@
 #include "op-codes.fc";
 #include "errors.fc";
 #include "utils/jetton_utils.fc";
+#include "utils/usdt_utils.fc";
 
 global slice storage::owner_address;
 global slice storage::jetton_master_address;
@@ -36,7 +37,7 @@ global cell  storage::jetton_wallet_code;
 }
 
 () send_usdt(int amount, slice destination, slice usdt_master_address, cell usdt_wallet_code) impure inline {
-    cell state_init = calculate_jetton_wallet_state_init(my_address(), usdt_master_address, usdt_wallet_code);
+    cell state_init = calculate_usdt_wallet_state_init(my_address(), usdt_master_address, usdt_wallet_code);
     slice jetton_wallet_address = calculate_jetton_wallet_address(state_init);
 
     cell msg_body = begin_cell()
