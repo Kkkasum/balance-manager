@@ -24,8 +24,9 @@ export async function run(provider: NetworkProvider) {
     );
 
     await balanceManager.sendWithdrawUsdt(provider.sender(), {
-        value: toNano('0.1'),
+        value: toNano('0.15'),
         jettonAmount: toNano('1000'),
         destination: ownerAddress,
+        fwdFee: toNano('0.05'),
     });
 }

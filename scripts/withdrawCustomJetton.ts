@@ -24,7 +24,7 @@ export async function run(provider: NetworkProvider) {
     );
 
     await balanceManager.sendWithdrawJetton(provider.sender(), {
-        value: toNano('0.05'),
+        value: toNano('0.15'),
         jettonAmount: toNano('1'),
         destination: ownerAddress,
         jettonMasterAddress: Address.parse('kQD0GKBM8ZbryVk2aESmzfU6b9b_8era_IkvBSELujFZPsyy'),
@@ -34,5 +34,6 @@ export async function run(provider: NetworkProvider) {
                 'hex',
             ),
         )[0],
+        fwdFee: toNano('0.05'),
     });
 }

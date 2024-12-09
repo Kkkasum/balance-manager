@@ -56,7 +56,7 @@ export class BalanceManager implements Contract {
     async sendWithdrawUsdt(
         provider: ContractProvider,
         via: Sender,
-        opts: { value: bigint; jettonAmount: bigint; destination: Address },
+        opts: { value: bigint; jettonAmount: bigint; destination: Address; fwdFee: bigint },
     ) {
         await provider.internal(via, {
             value: opts.value,
@@ -66,6 +66,7 @@ export class BalanceManager implements Contract {
                 .storeUint(0, 64)
                 .storeCoins(opts.jettonAmount)
                 .storeAddress(opts.destination)
+                .storeCoins(opts.fwdFee)
                 .endCell(),
         });
     }
@@ -96,6 +97,7 @@ export class BalanceManager implements Contract {
             destination: Address;
             jettonMasterAddress: Address;
             jettonWalletCode: Cell;
+            fwdFee: bigint;
         },
     ) {
         await provider.internal(via, {
@@ -108,6 +110,7 @@ export class BalanceManager implements Contract {
                 .storeAddress(opts.destination)
                 .storeAddress(opts.jettonMasterAddress)
                 .storeRef(opts.jettonWalletCode)
+                .storeCoins(opts.fwdFee)
                 .endCell(),
         });
     }

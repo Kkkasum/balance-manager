@@ -130,9 +130,10 @@ describe('BalanceManager', () => {
 
         const withdrawJettonAmount = toNano('100');
         const withdrawJettonResult = await balanceManager.sendWithdrawUsdt(deployer.getSender(), {
-            value: toNano('0.05'),
+            value: toNano('0.1'),
             jettonAmount: withdrawJettonAmount,
             destination: destination,
+            fwdFee: toNano('0.05'),
         });
         expect(withdrawJettonResult.transactions).toHaveTransaction({
             from: deployer.address,
@@ -150,6 +151,12 @@ describe('BalanceManager', () => {
             to: destinationJettonWalletAddress,
             op: 0x178d4519,
             deploy: true,
+            success: true,
+        });
+        expect(withdrawJettonResult.transactions).toHaveTransaction({
+            from: destinationJettonWalletAddress,
+            to: destination,
+            op: 0x7362d09c,
             success: true,
         });
 
@@ -213,9 +220,10 @@ describe('BalanceManager', () => {
 
         const withdrawJettonAmount = toNano('100');
         const withdrawJettonResult = await balanceManager.sendWithdrawUsdt(sender.getSender(), {
-            value: toNano('0.05'),
+            value: toNano('0.1'),
             jettonAmount: withdrawJettonAmount,
             destination: destination,
+            fwdFee: toNano('0.05'),
         });
         expect(withdrawJettonResult.transactions).toHaveTransaction({
             from: sender.address,
@@ -337,11 +345,12 @@ describe('BalanceManager', () => {
 
         const withdrawJettonAmount = toNano('100');
         const withdrawJettonResult = await balanceManager.sendWithdrawJetton(deployer.getSender(), {
-            value: toNano('0.05'),
+            value: toNano('0.1'),
             jettonAmount: withdrawJettonAmount,
             destination: destination,
             jettonMasterAddress: customJettonMinter.address,
             jettonWalletCode: jettonWalletCode,
+            fwdFee: toNano('0.05'),
         });
         expect(withdrawJettonResult.transactions).toHaveTransaction({
             from: deployer.address,
@@ -440,11 +449,12 @@ describe('BalanceManager', () => {
 
         const withdrawJettonAmount = toNano('100');
         const withdrawJettonResult = await balanceManager.sendWithdrawJetton(sender.getSender(), {
-            value: toNano('0.05'),
+            value: toNano('0.1'),
             jettonAmount: withdrawJettonAmount,
             destination: destination,
             jettonMasterAddress: customJettonMinter.address,
             jettonWalletCode: jettonWalletCode,
+            fwdFee: toNano('0.05'),
         });
         expect(withdrawJettonResult.transactions).toHaveTransaction({
             from: sender.address,
